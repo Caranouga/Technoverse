@@ -1,6 +1,7 @@
 package fr.caranouga.technoverse;
 
 import com.mojang.logging.LogUtils;
+import fr.caranouga.technoverse.registry.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.food.FoodProperties;
@@ -41,10 +42,20 @@ public class Technoverse {
 
         MinecraftForge.EVENT_BUS.register(this);
 
+        ModItems.register(modEventBus);
+
+        modEventBus.addListener(this::addCreative);
+
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+    }
+
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if(event.getTabKey() == CreativeModeTabs.OP_BLOCKS){
+            event.accept(ModItems.EXAMPLE_ITEM);
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
