@@ -1,5 +1,7 @@
 {
   "item.tv.example_item": "Item d'exemple",
 
-  "block.tv.example_block": "Bloc d'exemple"
+  "block.tv.example_block": "Bloc d'exemple",
+
+  "creativetab.tv.example_tab": "Onglet d'exemple"
 }
