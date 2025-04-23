@@ -1,6 +1,7 @@
 package fr.caranouga.technoverse;
 
 import com.mojang.logging.LogUtils;
+import fr.caranouga.technoverse.registry.ModBlocks;
 import fr.caranouga.technoverse.registry.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
@@ -43,6 +44,7 @@ public class Technoverse {
         MinecraftForge.EVENT_BUS.register(this);
 
         ModItems.register(modEventBus);
+        ModBlocks.register(modEventBus);
 
         modEventBus.addListener(this::addCreative);
 
@@ -55,6 +57,7 @@ public class Technoverse {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == CreativeModeTabs.OP_BLOCKS){
             event.accept(ModItems.EXAMPLE_ITEM);
+            event.accept(ModBlocks.EXAMPLE_BLOCK);
         }
     }
 

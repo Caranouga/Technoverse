@@ -1,3 +1,5 @@
 {
-  "item.tv.example_item": "Example Item"
+  "item.tv.example_item": "Example Item",
+
+  "block.tv.example_block": "Example Block"
 }
