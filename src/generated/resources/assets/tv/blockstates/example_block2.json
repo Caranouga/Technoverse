@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "tv:block/example_block2"
+    }
+  }
+}

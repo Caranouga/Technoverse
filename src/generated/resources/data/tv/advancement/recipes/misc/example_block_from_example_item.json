@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_example_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tv:example_item"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tv:example_block_from_example_item"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_example_item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tv:example_block_from_example_item"
+    ]
+  }
+}

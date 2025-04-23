@@ -1,0 +1,9 @@
+// 1.21	2025-04-24T00:33:15.3398959	Recipes
+6cd549aeeb146a680721c9bb182b20c13257c049 data/tv/advancement/recipes/misc/dirt_from_example_block2.json
+22ba7c1100a4effbcdfe2c3a55336a886e72a5c5 data/tv/advancement/recipes/misc/example_block2_from_dirt.json
+e6c1af06303cb3bc2628777dbf9d408ac85c627f data/tv/advancement/recipes/misc/example_block_from_example_item.json
+91a02047ade76c51f44b6075bcbc7c439745ef92 data/tv/advancement/recipes/misc/example_item_from_example_block.json
+37bb8b1783bc838b8543bed7e3e1cbfa532d17d2 data/tv/recipe/dirt_from_example_block2.json
+81c8460c9f3292317c70eff56821140acb3a8be2 data/tv/recipe/example_block2_from_dirt.json
+df2ffb3665572b2cd950684952ee00ba64f5ed93 data/tv/recipe/example_block_from_example_item.json
+28cd4d188b564c9435545013d2fff60c024dbbd0 data/tv/recipe/example_item_from_example_block.json
