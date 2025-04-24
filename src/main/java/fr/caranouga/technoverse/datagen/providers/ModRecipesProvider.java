@@ -6,6 +6,7 @@ import fr.caranouga.technoverse.registry.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -23,6 +24,14 @@ public class ModRecipesProvider extends RecipeProvider implements IConditionBuil
     protected void buildRecipes(@NonNull RecipeOutput pRecipeOutput) {
         storageBlock(ModBlocks.CARANITE_BLOCK.get(), ModItems.CARANITE.get(), pRecipeOutput);
         nuggetsToIngot(ModItems.CARANITE_NUGGET.get(), ModItems.CARANITE.get(), pRecipeOutput);
+
+        // TODO: Add a recipe builder for the polishing item
+        //sandingRecipe(ModItems.IMPURE_CARANITE.get(), ModItems.CARANITE.get(), pRecipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SAND_PAPER.get(), 1)
+                .requires(ItemTags.SAND)
+                .unlockedBy("has_sand", has(ItemTags.SAND))
+                .save(pRecipeOutput);
     }
 
     private void storageBlock(Block block, Item item, RecipeOutput pRecipeOutput) {

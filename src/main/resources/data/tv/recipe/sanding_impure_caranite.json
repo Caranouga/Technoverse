@@ -1,0 +1,12 @@
+{
+  "type": "tv:sanding",
+  "ingredients": [
+    {
+      "item": "tv:impure_caranite"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tv:caranite"
+  }
+}

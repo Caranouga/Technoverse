@@ -1,9 +1,11 @@
-// 1.21	2025-04-24T01:29:35.2607679	Recipes
+// 1.21	2025-04-25T00:41:17.866215	Recipes
 1cd4aadf3e41f0d16d26b3b41700c787d2e1795b data/tv/advancement/recipes/misc/caranite_block_from_caranite.json
 545aa7311e402e92560a8ebf53149ce00281e3d9 data/tv/advancement/recipes/misc/caranite_from_caranite_block.json
 6ceee88ec21048d34d08098d7ce04ce9b3f61c7b data/tv/advancement/recipes/misc/caranite_from_caranite_nugget.json
 58a709a469de683673be5c52df1f7c0ea3212909 data/tv/advancement/recipes/misc/caranite_nugget_from_caranite.json
+0587ab6e4a2b9bf8635c16da84163522e7fdb525 data/tv/advancement/recipes/misc/sand_paper.json
 795d9ec6888e43308d0219068ffbe32dc712719c data/tv/recipe/caranite_block_from_caranite.json
 d44538cee18da68e83201e8f0ea9bbd56b725493 data/tv/recipe/caranite_from_caranite_block.json
 05b90c105f0058603f2281a4d3997b2917ab0b5a data/tv/recipe/caranite_from_caranite_nugget.json
 7c02f751de75fd8c22ffbf6581d44ddd76b2f3bc data/tv/recipe/caranite_nugget_from_caranite.json
+f89f356503bab6c0544cefc096cd67349accdf97 data/tv/recipe/sand_paper.json

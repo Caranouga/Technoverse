@@ -1,9 +1,7 @@
 package fr.caranouga.technoverse;
 
 import com.mojang.logging.LogUtils;
-import fr.caranouga.technoverse.registry.ModBlocks;
-import fr.caranouga.technoverse.registry.ModItems;
-import fr.caranouga.technoverse.registry.ModTabs;
+import fr.caranouga.technoverse.registry.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -21,7 +19,7 @@ import org.slf4j.Logger;
 public class Technoverse {
     public static final String MODID = "tv";
 
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public Technoverse() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -33,6 +31,9 @@ public class Technoverse {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+
+        ModRecipes.register(modEventBus);
+        ModDataComponents.register(modEventBus);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
