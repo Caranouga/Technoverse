@@ -1,7 +1,8 @@
 {
-  "item.tv.example_item": "Example Item",
+  "item.tv.caranite": "Caranite",
+  "item.tv.caranite_nugget": "Caranite Nugget",
 
-  "block.tv.example_block": "Example Block",
+  "block.tv.caranite_block": "Caranite Block",
 
-  "creativetab.tv.example_tab": "Example Tab"
+  "creativetab.tv.technoverse_tab": "Technoverse"
 }

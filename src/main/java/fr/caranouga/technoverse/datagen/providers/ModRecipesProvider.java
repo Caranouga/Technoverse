@@ -7,7 +7,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -21,8 +20,8 @@ public class ModRecipesProvider extends RecipeProvider implements IConditionBuil
 
     @Override
     protected void buildRecipes(@NonNull RecipeOutput pRecipeOutput) {
-        storageBlock(ModBlocks.EXAMPLE_BLOCK.get(), ModItems.EXAMPLE_ITEM.get(), pRecipeOutput);
-        storageBlock(ModBlocks.EXAMPLE_BLOCK2.get(), Items.DIRT , pRecipeOutput);
+        storageBlock(ModBlocks.CARANITE_BLOCK.get(), ModItems.CARANITE.get(), pRecipeOutput);
+        nuggetsToIngot(ModItems.CARANITE_NUGGET.get(), ModItems.CARANITE.get(), pRecipeOutput);
     }
 
     private void storageBlock(Block block, Item item, RecipeOutput pRecipeOutput) {
@@ -38,5 +37,20 @@ public class ModRecipesProvider extends RecipeProvider implements IConditionBuil
                 .requires(block)
                 .unlockedBy(getHasName(block), has(block))
                 .save(pRecipeOutput, Technoverse.MODID + ":" + getItemName(item) + "_from_" + getItemName(block));
+    }
+
+    private void nuggetsToIngot(Item nugget, Item ingot, RecipeOutput pRecipeOutput) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ingot)
+                .pattern("AAA")
+                .pattern("AAA")
+                .pattern("AAA")
+                .define('A', nugget)
+                .unlockedBy(getHasName(nugget), has(nugget))
+                .save(pRecipeOutput, Technoverse.MODID + ":" + getItemName(ingot) + "_from_" + getItemName(nugget));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, nugget, 9)
+                .requires(ingot)
+                .unlockedBy(getHasName(ingot), has(ingot))
+                .save(pRecipeOutput, Technoverse.MODID + ":" + getItemName(nugget) + "_from_" + getItemName(ingot));
     }
 }

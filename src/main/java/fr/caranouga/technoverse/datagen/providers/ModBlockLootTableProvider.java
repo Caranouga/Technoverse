@@ -1,7 +1,6 @@
 package fr.caranouga.technoverse.datagen.providers;
 
 import fr.caranouga.technoverse.registry.ModBlocks;
-import fr.caranouga.technoverse.registry.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
@@ -21,8 +20,6 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         ModBlocks.DROP_SELF_BLOCKS.forEach(block -> {
             dropSelf(block.get());
         });
-
-        this.add(ModBlocks.EXAMPLE_BLOCK2.get(), block -> createOreDrop(ModBlocks.EXAMPLE_BLOCK2.get(), ModItems.EXAMPLE_ITEM.get()));
     }
 
     @Override

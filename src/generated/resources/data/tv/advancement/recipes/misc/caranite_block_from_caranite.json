@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_example_item": {
+    "has_caranite": {
       "conditions": {
         "items": [
           {
-            "items": "tv:example_item"
+            "items": "tv:caranite"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "tv:example_block_from_example_item"
+        "recipe": "tv:caranite_block_from_caranite"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_example_item"
+      "has_caranite"
     ]
   ],
   "rewards": {
     "recipes": [
-      "tv:example_block_from_example_item"
+      "tv:caranite_block_from_caranite"
     ]
   }
 }

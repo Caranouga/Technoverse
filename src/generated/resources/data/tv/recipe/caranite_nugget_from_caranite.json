@@ -3,11 +3,11 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "tv:example_block"
+      "item": "tv:caranite"
     }
   ],
   "result": {
     "count": 9,
-    "id": "tv:example_item"
+    "id": "tv:caranite_nugget"
   }
 }

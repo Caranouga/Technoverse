@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tv:example_block"
+          "name": "tv:caranite_block"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "tv:blocks/example_block"
+  "random_sequence": "tv:blocks/caranite_block"
 }

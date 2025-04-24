@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "tv:example_item"
+      "item": "tv:caranite"
     }
   },
   "pattern": [
@@ -13,6 +13,6 @@
   ],
   "result": {
     "count": 1,
-    "id": "tv:example_block"
+    "id": "tv:caranite_block"
   }
 }
