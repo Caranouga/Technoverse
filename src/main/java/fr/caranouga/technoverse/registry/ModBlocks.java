@@ -33,11 +33,11 @@ public class ModBlocks {
         return registerBlock(id, block, false);
     }
 
-    private static <T extends Block> RegistryObject<T> registerBlock(String id, Supplier<T> block, boolean otherDrop) {
+    private static <T extends Block> RegistryObject<T> registerBlock(String id, Supplier<T> block, boolean doNotDropSelf) {
         RegistryObject<T> blockObject = BLOCKS.register(id, block);
         registerBlockItem(id, blockObject);
 
-        if (!otherDrop) DROP_SELF_BLOCKS.add(blockObject);
+        if (!doNotDropSelf) DROP_SELF_BLOCKS.add(blockObject);
 
         return blockObject;
     }
