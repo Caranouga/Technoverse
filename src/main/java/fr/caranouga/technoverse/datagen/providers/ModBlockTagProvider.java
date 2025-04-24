@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 import static fr.caranouga.technoverse.registry.ModBlocks.CARANITE_BLOCK;
+import static fr.caranouga.technoverse.registry.ModBlocks.CARANITE_ORE;
 
 public class ModBlockTagProvider extends BlockTagsProvider {
     public ModBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
@@ -20,11 +21,13 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
-                CARANITE_BLOCK.get()
+                CARANITE_BLOCK.get(),
+                CARANITE_ORE.get()
         );
 
         tag(BlockTags.NEEDS_IRON_TOOL).add(
-                CARANITE_BLOCK.get()
+                CARANITE_BLOCK.get(),
+                CARANITE_ORE.get()
         );
     }
 }

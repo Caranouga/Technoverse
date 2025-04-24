@@ -1,0 +1,4 @@
+// 1.21	2025-04-25T01:32:22.6836893	Registries
+b0ad5bcadb4966cef58d366c8b494bb6cce7d8ef data/tv/forge/biome_modifier/add_caranite_ore.json
+b458e9759853c43c8d24df3522d5f46e9c27f025 data/tv/worldgen/configured_feature/caranite_ore.json
+091aee147ff8a4d1aef26ec8311557cd5f42a662 data/tv/worldgen/placed_feature/caranite_ore_placed.json

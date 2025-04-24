@@ -1,4 +1,7 @@
-// 1.21	2025-04-24T01:16:22.0060103	Block States: tv
+// 1.21	2025-04-24T13:37:22.1613331	Block States: tv
 f5855027de81f99a3bd20f8f40cd44ab85cda6ce assets/tv/blockstates/caranite_block.json
+46d4640cdcb2ec334f2e43ef04caf5b6ced7b87b assets/tv/blockstates/caranite_ore.json
 7f706d2b4566de68ba7dd0e60fe16ec43a91712c assets/tv/models/block/caranite_block.json
+aae7caae10de01adcd8ee87ef66f494835c2f23a assets/tv/models/block/caranite_ore.json
 d275b231ab903e986fc3efdf95dc59187846b23e assets/tv/models/item/caranite_block.json
+89cfa9a6a2b4f4ff419b625041deec394d5a3245 assets/tv/models/item/caranite_ore.json

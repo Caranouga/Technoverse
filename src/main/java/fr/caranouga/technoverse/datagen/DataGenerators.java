@@ -2,6 +2,7 @@ package fr.caranouga.technoverse.datagen;
 
 import fr.caranouga.technoverse.Technoverse;
 import fr.caranouga.technoverse.datagen.providers.*;
+import fr.caranouga.technoverse.datagen.providers.ModDatapackEntries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -35,6 +36,7 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), blockTagsProvider);
         generator.addProvider(event.includeServer(), new ModItemTagProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
 
+        generator.addProvider(event.includeServer(), new ModDatapackEntries(packOutput, lookupProvider));
         // Client data
         generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new ModBlockStateProvider(packOutput, existingFileHelper));
