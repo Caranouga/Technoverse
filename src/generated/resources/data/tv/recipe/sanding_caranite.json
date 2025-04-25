@@ -1,7 +1,7 @@
 {
   "type": "tv:sanding",
   "ingredient": {
-      "item": "tv:impure_caranite"
+    "item": "tv:impure_caranite"
   },
   "result": {
     "count": 1,

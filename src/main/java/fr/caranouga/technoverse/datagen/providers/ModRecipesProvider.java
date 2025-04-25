@@ -1,6 +1,7 @@
 package fr.caranouga.technoverse.datagen.providers;
 
 import fr.caranouga.technoverse.Technoverse;
+import fr.caranouga.technoverse.datagen.builders.SandingRecipeBuilder;
 import fr.caranouga.technoverse.registry.ModBlocks;
 import fr.caranouga.technoverse.registry.ModItems;
 import net.minecraft.core.HolderLookup;
@@ -28,6 +29,9 @@ public class ModRecipesProvider extends RecipeProvider implements IConditionBuil
 
         // TODO: Add a recipe builder for the polishing item
         //sandingRecipe(ModItems.IMPURE_CARANITE.get(), ModItems.CARANITE.get(), pRecipeOutput);
+        SandingRecipeBuilder.sanding(RecipeCategory.MISC, ModItems.IMPURE_CARANITE.get(), ModItems.CARANITE.get(), 1)
+                .unlockedBy(getHasName(ModItems.IMPURE_CARANITE.get()), has(ModItems.IMPURE_CARANITE.get()))
+                .save(pRecipeOutput, Technoverse.MODID + ":sanding_" + getItemName(ModItems.CARANITE.get()));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SAND_PAPER.get(), 1)
                 .requires(ItemTags.SAND)
