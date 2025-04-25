@@ -1,0 +1,107 @@
+package fr.caranouga.technoverse.screen;
+
+import fr.caranouga.technoverse.Technoverse;
+import fr.caranouga.technoverse.blocks.AbstractMachineBlock;
+import fr.caranouga.technoverse.blocks.entity.AbstractMachineBlockEntity;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
+
+public abstract class AbstractMachineMenu<M extends AbstractMachineMenu<M, BE, B>, BE extends AbstractMachineBlockEntity<M>, B extends AbstractMachineBlock<B, BE>> extends AbstractContainerMenu {
+    public final BE blockEntity;
+    private final Level level;
+    private final B block;
+    private int invSize = 0;
+
+    public AbstractMachineMenu(MenuType<M> menuType, int pContainerId, Inventory inv, FriendlyByteBuf extraData, B block) {
+        this(menuType, pContainerId, inv, (BE) inv.player.level().getBlockEntity(extraData.readBlockPos()), block);
+    }
+
+    public AbstractMachineMenu(MenuType<M> menuType, int pContainerId, Inventory inv, BE blockEntity, B block) {
+        super(menuType, pContainerId);
+
+        this.blockEntity = blockEntity;
+        this.level = inv.player.level();
+        this.block = block;
+        this.invSize = blockEntity.inventory.getSlots();
+
+        addPlayerInventory(inv);
+        addPlayerHotbar(inv);
+
+        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 80, 35));
+    }
+
+    /**
+     * Thanks to diesieben07 for this method (<a href="https://github.com/diesieben07/SevenCommons">SevenCommons</a>)
+     */
+    private static final int HOTBAR_SLOT_COUNT = 9;
+    private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
+    private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
+    private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
+    private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
+    private static final int VANILLA_FIRST_SLOT_IDX = 0;
+    private static final int BE_INVENTORY_FIRST_SLOT_IDX = VANILLA_FIRST_SLOT_IDX + VANILLA_SLOT_COUNT;
+
+    private final int BE_INVENTORY_SLOT_COUNT = this.invSize;
+
+    @Override
+    @NotNull
+    public ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
+        Slot sourceSlot = slots.get(pIndex);
+        if(!sourceSlot.hasItem()) return ItemStack.EMPTY;
+        ItemStack sourceStack = sourceSlot.getItem();
+        ItemStack copyOfSourceStack = sourceStack.copy();
+
+        if(pIndex < BE_INVENTORY_FIRST_SLOT_IDX){
+            // The slot clicked is a vanilla slot
+            if(!moveItemStackTo(sourceStack, BE_INVENTORY_FIRST_SLOT_IDX, BE_INVENTORY_FIRST_SLOT_IDX + BE_INVENTORY_SLOT_COUNT, false)){
+                return ItemStack.EMPTY;
+            }
+        } else if (pIndex < BE_INVENTORY_FIRST_SLOT_IDX + BE_INVENTORY_SLOT_COUNT) {
+            // The slot clicked is a BlockEntity slot
+            if(!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_IDX, BE_INVENTORY_FIRST_SLOT_IDX, false)){
+                return ItemStack.EMPTY;
+            }
+        }else{
+            Technoverse.LOGGER.warn("Invalid slotIndex: {}", pIndex);
+            return ItemStack.EMPTY;
+        }
+
+        if(sourceStack.getCount() == 0){
+            sourceSlot.set(ItemStack.EMPTY);
+        }else{
+            sourceSlot.setChanged();
+        }
+
+        sourceSlot.onTake(pPlayer, sourceStack);
+
+        return copyOfSourceStack;
+    }
+
+    @Override
+    public boolean stillValid(@NotNull Player pPlayer) {
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, block);
+    }
+
+    private void addPlayerInventory(Inventory pInv) {
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 9; j++){
+                this.addSlot(new Slot(pInv, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+            }
+        }
+    }
+
+    private void addPlayerHotbar(Inventory pInv){
+        for(int i = 0; i < 9; ++i){
+            this.addSlot(new Slot(pInv, i, 8 + i * 18, 142));
+        }
+    }
+}
