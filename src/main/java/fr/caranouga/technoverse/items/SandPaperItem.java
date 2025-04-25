@@ -1,15 +1,16 @@
 package fr.caranouga.technoverse.items;
 
-import fr.caranouga.technoverse.Technoverse;
 import fr.caranouga.technoverse.recipes.sanding.SandingRecipe;
 import fr.caranouga.technoverse.recipes.sanding.SandingRecipeInput;
 import fr.caranouga.technoverse.registry.ModDataComponents;
 import fr.caranouga.technoverse.registry.ModRecipes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -19,12 +20,17 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+/**
+ * This class is heavily inspired by the <a href="https://github.com/Creators-of-Create/Create/blob/mc1.21.1/dev/src/main/java/com/simibubi/create/content/equipment/sandPaper/SandPaperItem.java">SandPaperItem</a> item from Create.
+ * Thank you to the Create team for their amazing work!
+ */
 public class SandPaperItem extends Item {
     public SandPaperItem() {
         super(new Item.Properties().durability(16));
@@ -35,21 +41,15 @@ public class SandPaperItem extends Item {
     public InteractionResultHolder<ItemStack> use(@NotNull Level pLevel, @NotNull Player pPlayer, @NotNull InteractionHand pUsedHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
 
-        if (itemstack.get(ModDataComponents.POLISHING.get()) != null) {
-            Technoverse.LOGGER.debug("SandPaperItem has polishing data");
+        if (itemstack.has(ModDataComponents.POLISHING.get())) {
             pPlayer.startUsingItem(pUsedHand);
             return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
         }
 
         InteractionHand otherHand = pUsedHand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         ItemStack itemInOtherHand = pPlayer.getItemInHand(otherHand);
-        Technoverse.LOGGER.debug("Other hand: {}", otherHand);
-        Technoverse.LOGGER.debug("Item in other hand: {}", itemInOtherHand);
 
-        Optional<RecipeHolder<SandingRecipe>> recipe = pLevel.getRecipeManager().getRecipeFor(
-                ModRecipes.SANDING_TYPE.get(), new SandingRecipeInput(itemInOtherHand), pLevel);
-        if (recipe.isPresent()) {
-            Technoverse.LOGGER.debug("Has recipe");
+        if (canPolish(itemInOtherHand, pLevel)) {
             ItemStack item = itemInOtherHand.copy();
             ItemStack toPolish = item.split(1);
             pPlayer.startUsingItem(pUsedHand);
@@ -65,16 +65,13 @@ public class SandPaperItem extends Item {
     @Override
     @NotNull
     public ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity entityLiving) {
-        Technoverse.LOGGER.debug("EntityType: {}", entityLiving.getType());
         if (!(entityLiving instanceof Player player)) return stack;
 
-        if (stack.get(ModDataComponents.POLISHING.get()) != null) {
-            Technoverse.LOGGER.debug("Finish using item: Has data");
+        if (stack.has(ModDataComponents.POLISHING.get())) {
             ItemStack toPolish = stack.get(ModDataComponents.POLISHING.get());
-            Technoverse.LOGGER.debug("ToPolish: {}", toPolish);
+            ItemStack polished = applyPolish(toPolish, worldIn);
 
-
-            Optional<RecipeHolder<SandingRecipe>> recipe = worldIn.getRecipeManager().getRecipeFor(
+            /*Optional<RecipeHolder<SandingRecipe>> recipe = worldIn.getRecipeManager().getRecipeFor(
                     ModRecipes.SANDING_TYPE.get(), new SandingRecipeInput(toPolish), worldIn);
             if(recipe.isEmpty()) {
                 Technoverse.LOGGER.debug("No recipe found");
@@ -83,42 +80,34 @@ public class SandPaperItem extends Item {
             }
             ItemStack polished = recipe.get().value().output();
             Technoverse.LOGGER.debug("Polished: {}", polished);
-            Technoverse.LOGGER.debug("Polished2: {}", recipe.get().value());
+            Technoverse.LOGGER.debug("Polished2: {}", recipe.get().value());*/
 
             if (worldIn.isClientSide) {
-                /*spawnParticles(entityLiving.getEyePosition(1)
+                spawnParticles(entityLiving.getEyePosition(1)
                                 .add(entityLiving.getLookAngle()
                                         .scale(.5f)),
-                        toPolish, worldIn);*/
+                        toPolish, worldIn);
                 return stack;
             }
 
             if (!polished.isEmpty()) {
-                player.getInventory().placeItemBackInInventory(polished.copy());
+                player.getInventory().placeItemBackInInventory(polished);
             }
 
             stack.remove(ModDataComponents.POLISHING.get());
-
-            EquipmentSlot slot = player.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
-            stack.hurtAndBreak(1, entityLiving, slot);
+            stack.hurtAndBreak(1, entityLiving, LivingEntity.getSlotForHand(entityLiving.getUsedItemHand()));
         }
 
         return stack;
     }
 
-    /*public static void spawnParticles(Vec3 location, ItemStack polishedStack, Level world) {
-        for (int i = 0; i < 20; i++) {
-            Vec3 motion = VecHelper.offsetRandomly(Vec3.ZERO, world.random, 1 / 8f);
-            world.addParticle(new ItemParticleOption(ParticleTypes.ITEM, polishedStack), location.x, location.y,
-                    location.z, motion.x, motion.y, motion.z);
-        }
-    }*/
-
     @Override
     public void releaseUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity entityLiving, int timeLeft) {
         if (!(entityLiving instanceof Player player)) return;
-        if (stack.get(ModDataComponents.POLISHING.get()) != null) {
+        if (stack.has(ModDataComponents.POLISHING.get())) {
             ItemStack toPolish = stack.get(ModDataComponents.POLISHING.get());
+
+            // noinspection DataFlowIssue - toPolish is not null because we checked it with has() before
             player.getInventory().placeItemBackInInventory(toPolish);
 
             stack.remove(ModDataComponents.POLISHING.get());
@@ -150,8 +139,7 @@ public class SandPaperItem extends Item {
         if (newState != null) {
             level.setBlockAndUpdate(pos, newState);
             if (player != null) {
-                EquipmentSlot slot = player.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
-                stack.hurtAndBreak(1, player, slot);
+                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
             }
 
             return InteractionResult.sidedSuccess(level.isClientSide);
@@ -169,14 +157,13 @@ public class SandPaperItem extends Item {
     public TriState shouldTriggerUseEffects(ItemStack stack, LivingEntity entity) {
         // Trigger every tick so that we have more fine grain control over the animation
         return TriState.TRUE;
-    }*/
+    }
 
-    /*@Override
+    @Override
     public boolean triggerUseEffects(ItemStack stack, LivingEntity entity, int count, RandomSource random) {
-        CompoundTag tag = stack.getOrCreateTag();
-        if (tag.contains("Polishing")) {
-            ItemStack polishing = ItemStack.of(tag.getCompound("Polishing"));
-            ((LivingEntityAccessor) entity).create$callSpawnItemParticles(polishing, 1);
+        if(stack.has(ModDataComponents.POLISHING.get())) {
+            ItemStack polishing = stack.get(ModDataComponents.POLISHING.get());
+            ((LivingEntityAccessor) entity).callSpawnItemParticles(polishing, 1);
         }
 
         // After 6 ticks play the sound every 7th
@@ -185,9 +172,9 @@ public class SandPaperItem extends Item {
                     random.nextFloat() * 0.2F + 0.9F);
 
         return true;
-    }*/
+    }
 
-    /*@Override
+    @Override
     @NotNull
     public SoundEvent getEatingSound() {
         return AllSoundEvents.SANDING_SHORT.getMainEvent();
@@ -205,7 +192,6 @@ public class SandPaperItem extends Item {
     }
 
     @Override
-    @NotNull
     public int getEnchantmentValue() {
         return 1;
     }
@@ -215,4 +201,34 @@ public class SandPaperItem extends Item {
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(SimpleCustomRenderer.create(this, new SandPaperItemRenderer()));
     }*/
+
+    private boolean canPolish(ItemStack stack, Level level) {
+        Optional<RecipeHolder<SandingRecipe>> recipe = level.getRecipeManager().getRecipeFor(
+                ModRecipes.SANDING_TYPE.get(), new SandingRecipeInput(stack), level);
+        return recipe.isPresent();
+    }
+
+    private ItemStack applyPolish(ItemStack stack, Level level) {
+        Optional<RecipeHolder<SandingRecipe>> recipe = level.getRecipeManager().getRecipeFor(
+                ModRecipes.SANDING_TYPE.get(), new SandingRecipeInput(stack), level);
+
+        if (recipe.isPresent()) {
+            ItemStack polished = recipe.get().value().output();
+            return polished.copy();
+        } else {
+            return ItemStack.EMPTY;
+        }
+    }
+
+    private void spawnParticles(Vec3 location, ItemStack polishedStack, Level world) {
+        for (int i = 0; i < 20; i++) {
+            //Vec3 motion = VecHelper.offsetRandomly(Vec3.ZERO, world.random, 1 / 8f);
+            RandomSource r = world.random;
+            float radius = 1 / 8f;
+            Vec3 motion = new Vec3((r.nextFloat() - .5f) * 2 * radius, (r.nextFloat() - .5f) * 2 * radius,
+                    (r.nextFloat() - .5f) * 2 * radius);
+            world.addParticle(new ItemParticleOption(ParticleTypes.ITEM, polishedStack), location.x, location.y,
+                    location.z, motion.x, motion.y, motion.z);
+        }
+    }
 }
