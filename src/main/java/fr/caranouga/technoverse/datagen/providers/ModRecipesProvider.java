@@ -8,6 +8,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
@@ -30,6 +31,7 @@ public class ModRecipesProvider extends RecipeProvider implements IConditionBuil
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SAND_PAPER.get(), 1)
                 .requires(ItemTags.SAND)
+                .requires(Items.PAPER)
                 .unlockedBy("has_sand", has(ItemTags.SAND))
                 .save(pRecipeOutput);
     }
