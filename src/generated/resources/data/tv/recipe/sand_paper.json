@@ -4,6 +4,9 @@
   "ingredients": [
     {
       "tag": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:paper"
     }
   ],
   "result": {
