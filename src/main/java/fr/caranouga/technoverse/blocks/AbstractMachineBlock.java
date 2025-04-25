@@ -4,8 +4,11 @@ import com.mojang.serialization.MapCodec;
 import fr.caranouga.technoverse.Technoverse;
 import fr.caranouga.technoverse.blocks.entity.AbstractMachineBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -99,5 +102,14 @@ public abstract class AbstractMachineBlock<B extends AbstractMachineBlock<B, BE>
 
     private boolean isInstanceOf(Object obj){
         return blockEntityClass.isInstance(obj);
+    }
+
+    protected static class CommonUses {
+        public static ItemInteractionResult openScreen(Level pLevel, Player pPlayer, AbstractMachineBlockEntity<?> blockEntity, BlockPos pPos, String id){
+            if(!pLevel.isClientSide()){
+                ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(blockEntity, Component.translatable("container." + Technoverse.MODID + "." + id)), pPos);
+            }
+            return ItemInteractionResult.SUCCESS;
+        }
     }
 }
