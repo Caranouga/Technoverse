@@ -1,10 +1,9 @@
 package fr.caranouga.technoverse;
 
 import com.mojang.logging.LogUtils;
-import fr.caranouga.technoverse.blocks.entity.renderer.TestBlockEntityRenderer;
+import fr.caranouga.technoverse.blocks.SandingMachine;
 import fr.caranouga.technoverse.registry.*;
-import fr.caranouga.technoverse.screen.TestMenu;
-import fr.caranouga.technoverse.screen.TestScreen;
+import fr.caranouga.technoverse.screen.SandingMachineScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -59,12 +58,13 @@ public class Technoverse {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            MenuScreens.register(ModMenuTypes.TEST_MENU.get(), TestScreen::new);
+            //MenuScreens.register(ModMenuTypes.TEST_MENU.get(), TestScreen::new);
+            MenuScreens.register(ModMenuTypes.SANDING_MACHINE_MENU.get(), SandingMachineScreen::new);
         }
 
         @SubscribeEvent
         public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerBlockEntityRenderer(ModBlockEntities.TEST_BE.get(), TestBlockEntityRenderer::new);
+            //event.registerBlockEntityRenderer(ModBlockEntities.TEST_BE.get(), TestBlockEntityRenderer::new);
         }
     }
 }

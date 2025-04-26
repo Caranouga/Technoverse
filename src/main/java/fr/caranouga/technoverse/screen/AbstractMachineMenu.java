@@ -12,14 +12,13 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractMachineMenu<M extends AbstractMachineMenu<M, BE, B>, BE extends AbstractMachineBlockEntity<M>, B extends AbstractMachineBlock<B, BE>> extends AbstractContainerMenu {
     public final BE blockEntity;
     private final Level level;
     private final B block;
-    private int invSize = 0;
+    private int invSize;
 
     public AbstractMachineMenu(MenuType<M> menuType, int pContainerId, Inventory inv, FriendlyByteBuf extraData, B block) {
         this(menuType, pContainerId, inv, (BE) inv.player.level().getBlockEntity(extraData.readBlockPos()), block);
@@ -31,12 +30,14 @@ public abstract class AbstractMachineMenu<M extends AbstractMachineMenu<M, BE, B
         this.blockEntity = blockEntity;
         this.level = inv.player.level();
         this.block = block;
-        this.invSize = blockEntity.inventory.getSlots();
+        this.invSize = blockEntity.itemHandler.getSlots();
+
+        addBeforeVanilla();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
 
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 80, 35));
+        addAfterVanilla();
     }
 
     /**
@@ -45,10 +46,10 @@ public abstract class AbstractMachineMenu<M extends AbstractMachineMenu<M, BE, B
     private static final int HOTBAR_SLOT_COUNT = 9;
     private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
     private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
-    private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
-    private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
+    private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT; // 27
+    private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT; // 36
     private static final int VANILLA_FIRST_SLOT_IDX = 0;
-    private static final int BE_INVENTORY_FIRST_SLOT_IDX = VANILLA_FIRST_SLOT_IDX + VANILLA_SLOT_COUNT;
+    private static final int BE_INVENTORY_FIRST_SLOT_IDX = VANILLA_FIRST_SLOT_IDX + VANILLA_SLOT_COUNT; // 36
 
     private final int BE_INVENTORY_SLOT_COUNT = this.invSize;
 
@@ -91,17 +92,23 @@ public abstract class AbstractMachineMenu<M extends AbstractMachineMenu<M, BE, B
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer, block);
     }
 
-    private void addPlayerInventory(Inventory pInv) {
-        for(int i = 0; i < 3; i++){
-            for(int j = 0; j < 9; j++){
-                this.addSlot(new Slot(pInv, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+    protected void addBeforeVanilla(){
+    }
+
+    protected void addAfterVanilla(){
+    }
+
+    private void addPlayerInventory(Inventory playerInventory) {
+        for (int i = 0; i < 3; ++i) {
+            for (int l = 0; l < 9; ++l) {
+                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
             }
         }
     }
 
-    private void addPlayerHotbar(Inventory pInv){
-        for(int i = 0; i < 9; ++i){
-            this.addSlot(new Slot(pInv, i, 8 + i * 18, 142));
+    private void addPlayerHotbar(Inventory playerInventory) {
+        for (int i = 0; i < 9; ++i) {
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
         }
     }
 }

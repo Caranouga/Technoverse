@@ -19,6 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +29,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public abstract class AbstractMachineBlockEntity<M extends AbstractMachineMenu<M, ?, ?>> extends BlockEntity implements MenuProvider {
-    public final ItemStackHandler inventory;
+    public ItemStackHandler itemHandler;
+    private LazyOptional<IItemHandler> lanzyItemHandler = LazyOptional.empty();
+
     private final String id;
     private final Class<M> menuClass;
     private final Class<? extends AbstractMachineBlockEntity<M>> beClass;
@@ -35,7 +39,7 @@ public abstract class AbstractMachineBlockEntity<M extends AbstractMachineMenu<M
     public AbstractMachineBlockEntity(BlockEntityType<?> beType, String id, BlockPos pPos, BlockState pBlockState, int inventorySize, Class<M> menuClass, Class<? extends AbstractMachineBlockEntity<M>> beClass) {
         super(beType, pPos, pBlockState);
 
-        this.inventory = new ItemStackHandler(inventorySize){
+        this.itemHandler = new ItemStackHandler(inventorySize){
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
@@ -50,15 +54,15 @@ public abstract class AbstractMachineBlockEntity<M extends AbstractMachineMenu<M
     }
 
     public void clearContents(){
-        for(int i = 0; i < this.inventory.getSlots(); i++) {
-            inventory.setStackInSlot(i, ItemStack.EMPTY);
+        for(int i = 0; i < this.itemHandler.getSlots(); i++) {
+            itemHandler.setStackInSlot(i, ItemStack.EMPTY);
         }
     }
 
     public void drops(){
-        SimpleContainer inv = new SimpleContainer(inventory.getSlots());
-        for (int i = 0; i < inventory.getSlots(); i++) {
-            inv.setItem(i, inventory.getStackInSlot(i));
+        SimpleContainer inv = new SimpleContainer(itemHandler.getSlots());
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            inv.setItem(i, itemHandler.getStackInSlot(i));
         }
 
         Containers.dropContents(this.level, this.worldPosition, inv);
@@ -68,13 +72,13 @@ public abstract class AbstractMachineBlockEntity<M extends AbstractMachineMenu<M
     @Override
     protected void saveAdditional(@NotNull CompoundTag pTag, @NotNull HolderLookup.Provider pRegistries) {
         super.saveAdditional(pTag, pRegistries);
-        pTag.put("inventory", inventory.serializeNBT(pRegistries));
+        pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
     }
 
     @Override
     protected void loadAdditional(@NotNull CompoundTag pTag, @NotNull HolderLookup.Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
-        inventory.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+        itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
     }
     // endregion
 
@@ -88,6 +92,18 @@ public abstract class AbstractMachineBlockEntity<M extends AbstractMachineMenu<M
     @NotNull
     public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        lanzyItemHandler = LazyOptional.of(() -> itemHandler);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        lanzyItemHandler.invalidate();
     }
 
     @Override

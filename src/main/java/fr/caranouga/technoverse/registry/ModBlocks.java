@@ -1,7 +1,7 @@
 package fr.caranouga.technoverse.registry;
 
 import fr.caranouga.technoverse.Technoverse;
-import fr.caranouga.technoverse.blocks.Test;
+import fr.caranouga.technoverse.blocks.SandingMachine;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -43,8 +43,10 @@ public class ModBlocks {
             ));
 
     // MACHINES
-    public static final RegistryObject<Test> TEST = registerBlock("test_de_cara",
-            () -> new Test(BlockBehaviour.Properties.of().noOcclusion()));
+    /*public static final RegistryObject<Test> TEST = registerBlock("test_de_cara",
+            () -> new Test(BlockBehaviour.Properties.of().noOcclusion()));*/
+    public static final RegistryObject<SandingMachine> SANDING_MACHINE = registerBlock("sanding_machine",
+            () -> new SandingMachine(BlockBehaviour.Properties.of().noOcclusion()));
 
     // region Utility methods
     private static <T extends Block> RegistryObject<T> registerBlock(String id, Supplier<T> block){

@@ -1,4 +1,4 @@
-package fr.caranouga.technoverse.blocks.entity.renderer;
+/*package fr.caranouga.technoverse.blocks.entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -43,3 +43,4 @@ public class TestBlockEntityRenderer implements BlockEntityRenderer<TestBlockEnt
         return LightTexture.pack(blockLight, skyLight);
     }
 }
+*/
