@@ -23,6 +23,7 @@ import static fr.caranouga.technoverse.registry.ModItems.IN_CREATIVE_TAB;
 public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Technoverse.MODID);
     public static final ArrayList<RegistryObject<? extends Block>> DROP_SELF_BLOCKS = new ArrayList<>();
+    public static final ArrayList<RegistryObject<? extends Block>> DEFAULT_BLOCKSTATE = new ArrayList<>();
 
     // STORAGE BLOCKS
     public static final RegistryObject<Block> CARANITE_BLOCK = registerBlock("caranite_block",
@@ -43,23 +44,26 @@ public class ModBlocks {
             ));
 
     // MACHINES
-    /*public static final RegistryObject<Test> TEST = registerBlock("test_de_cara",
-            () -> new Test(BlockBehaviour.Properties.of().noOcclusion()));*/
     public static final RegistryObject<SandingMachine> SANDING_MACHINE = registerBlock("sanding_machine",
-            () -> new SandingMachine(BlockBehaviour.Properties.of().noOcclusion()));
+            () -> new SandingMachine(BlockBehaviour.Properties.of().noOcclusion()), false, true);
 
     // region Utility methods
     private static <T extends Block> RegistryObject<T> registerBlock(String id, Supplier<T> block){
         return registerBlock(id, block, false);
     }
 
-    private static <T extends Block> RegistryObject<T> registerBlock(String id, Supplier<T> block, boolean doNotDropSelf) {
+    private static <T extends Block> RegistryObject<T> registerBlock(String id, Supplier<T> block, boolean doNotDropSelf, boolean nonDefaultState) {
         RegistryObject<T> blockObject = BLOCKS.register(id, block);
         registerBlockItem(id, blockObject);
 
         if (!doNotDropSelf) DROP_SELF_BLOCKS.add(blockObject);
+        if (!nonDefaultState) DEFAULT_BLOCKSTATE.add(blockObject);
 
         return blockObject;
+    }
+
+    private static <T extends Block> RegistryObject<T> registerBlock(String id, Supplier<T> block, boolean doNotDropSelf) {
+        return registerBlock(id, block, doNotDropSelf, false);
     }
 
     private static <T extends Block> void registerBlockItem(String id, RegistryObject<T> block){

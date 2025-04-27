@@ -2,6 +2,7 @@ package fr.caranouga.technoverse.compat;
 
 import fr.caranouga.technoverse.Technoverse;
 import fr.caranouga.technoverse.recipes.sanding.SandingRecipe;
+import fr.caranouga.technoverse.registry.ModBlocks;
 import fr.caranouga.technoverse.registry.ModItems;
 import fr.caranouga.technoverse.registry.ModRecipes;
 import mezz.jei.api.IModPlugin;
@@ -48,5 +49,6 @@ public class JeiTechnoverseModPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(ModItems.SAND_PAPER.get().asItem()), SandingRecipeCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.SANDING_MACHINE.get()), SandingRecipeCategory.RECIPE_TYPE);
     }
 }

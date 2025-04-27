@@ -82,6 +82,7 @@ public abstract class AbstractMachineBlockEntity<M extends AbstractMachineMenu<M
     }
     // endregion
 
+    // region Sync
     @Override
     @Nullable
     public Packet<ClientGamePacketListener> getUpdatePacket() {
@@ -93,6 +94,7 @@ public abstract class AbstractMachineBlockEntity<M extends AbstractMachineMenu<M
     public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
     }
+    // endregion
 
     @Override
     public void onLoad() {

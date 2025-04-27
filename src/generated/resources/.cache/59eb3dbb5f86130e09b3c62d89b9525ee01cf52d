@@ -1,3 +1,4 @@
-// 1.21	2025-04-24T13:37:22.1653311	Loot Tables
+// 1.21	2025-04-27T01:03:22.1166399	Loot Tables
 1ef6c4ef31df8394e43a0385e014712b8e4e5173 data/tv/loot_table/blocks/caranite_block.json
 95e5a6fa4d0ab9350ad9e1b40da141d5c648dddd data/tv/loot_table/blocks/caranite_ore.json
+f549c8b77445319c2d832f2696c5f3558cd14a9f data/tv/loot_table/blocks/sanding_machine.json

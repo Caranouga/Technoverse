@@ -1,6 +1,5 @@
 package fr.caranouga.technoverse.screen;
 
-import fr.caranouga.technoverse.Technoverse;
 import fr.caranouga.technoverse.blocks.AbstractMachineBlock;
 import fr.caranouga.technoverse.blocks.entity.AbstractMachineBlockEntity;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,11 +17,6 @@ public abstract class AbstractMachineMenu<M extends AbstractMachineMenu<M, BE, B
     public final BE blockEntity;
     private final Level level;
     private final B block;
-    private int invSize;
-
-    public AbstractMachineMenu(MenuType<M> menuType, int pContainerId, Inventory inv, FriendlyByteBuf extraData, B block) {
-        this(menuType, pContainerId, inv, (BE) inv.player.level().getBlockEntity(extraData.readBlockPos()), block);
-    }
 
     public AbstractMachineMenu(MenuType<M> menuType, int pContainerId, Inventory inv, BE blockEntity, B block) {
         super(menuType, pContainerId);
@@ -30,61 +24,41 @@ public abstract class AbstractMachineMenu<M extends AbstractMachineMenu<M, BE, B
         this.blockEntity = blockEntity;
         this.level = inv.player.level();
         this.block = block;
-        this.invSize = blockEntity.itemHandler.getSlots();
 
         addBeforeVanilla();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
-
-        addAfterVanilla();
     }
 
-    /**
-     * Thanks to diesieben07 for this method (<a href="https://github.com/diesieben07/SevenCommons">SevenCommons</a>)
-     */
-    private static final int HOTBAR_SLOT_COUNT = 9;
-    private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
-    private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
-    private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT; // 27
-    private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT; // 36
-    private static final int VANILLA_FIRST_SLOT_IDX = 0;
-    private static final int BE_INVENTORY_FIRST_SLOT_IDX = VANILLA_FIRST_SLOT_IDX + VANILLA_SLOT_COUNT; // 36
 
-    private final int BE_INVENTORY_SLOT_COUNT = this.invSize;
-
+    // Function from CofhCore
     @Override
     @NotNull
     public ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
-        Slot sourceSlot = slots.get(pIndex);
-        if(!sourceSlot.hasItem()) return ItemStack.EMPTY;
-        ItemStack sourceStack = sourceSlot.getItem();
-        ItemStack copyOfSourceStack = sourceStack.copy();
+        ItemStack stack = ItemStack.EMPTY;
+        Slot slot = slots.get(pIndex);
 
-        if(pIndex < BE_INVENTORY_FIRST_SLOT_IDX){
-            // The slot clicked is a vanilla slot
-            if(!moveItemStackTo(sourceStack, BE_INVENTORY_FIRST_SLOT_IDX, BE_INVENTORY_FIRST_SLOT_IDX + BE_INVENTORY_SLOT_COUNT, false)){
+        if (slot.hasItem()) {
+            ItemStack stackInSlot = slot.getItem();
+            stack = stackInSlot.copy();
+
+            if (!performMerge(pIndex, stackInSlot)) {
                 return ItemStack.EMPTY;
             }
-        } else if (pIndex < BE_INVENTORY_FIRST_SLOT_IDX + BE_INVENTORY_SLOT_COUNT) {
-            // The slot clicked is a BlockEntity slot
-            if(!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_IDX, BE_INVENTORY_FIRST_SLOT_IDX, false)){
+            slot.onQuickCraft(stackInSlot, stack);
+
+            if (stackInSlot.isEmpty()) {
+                slot.set(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+            if (stackInSlot.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
-        }else{
-            Technoverse.LOGGER.warn("Invalid slotIndex: {}", pIndex);
-            return ItemStack.EMPTY;
+            slot.onTake(pPlayer, stackInSlot);
         }
-
-        if(sourceStack.getCount() == 0){
-            sourceSlot.set(ItemStack.EMPTY);
-        }else{
-            sourceSlot.setChanged();
-        }
-
-        sourceSlot.onTake(pPlayer, sourceStack);
-
-        return copyOfSourceStack;
+        return stack;
     }
 
     @Override
@@ -93,9 +67,6 @@ public abstract class AbstractMachineMenu<M extends AbstractMachineMenu<M, BE, B
     }
 
     protected void addBeforeVanilla(){
-    }
-
-    protected void addAfterVanilla(){
     }
 
     private void addPlayerInventory(Inventory playerInventory) {
@@ -109,6 +80,22 @@ public abstract class AbstractMachineMenu<M extends AbstractMachineMenu<M, BE, B
     private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+        }
+    }
+
+    protected abstract int getNumberOfSlots();
+
+    protected boolean performMerge(int index, ItemStack stack) {
+        int invBase = getNumberOfSlots();
+
+        int invFull = slots.size();
+        int invHotbar = invFull - 9;
+        int invPlayer = invHotbar - 27;
+
+        if (index < invPlayer) {
+            return moveItemStackTo(stack, invPlayer, invFull, false);
+        } else {
+            return moveItemStackTo(stack, 0, invBase, false);
         }
     }
 }
