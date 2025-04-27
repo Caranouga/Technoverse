@@ -1,0 +1,7 @@
+{
+  "parent": "tv:block/machine_template",
+  "textures": {
+    "front": "tv:block/sanding_machine_front",
+    "side": "tv:block/sanding_machine_side"
+  }
+}
